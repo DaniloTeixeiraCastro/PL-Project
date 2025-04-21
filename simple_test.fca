@@ -1,0 +1,5 @@
+-- Importar a tabela de estações
+IMPORT TABLE estacoes FROM "estacoes.csv";
+
+-- Mostrar a tabela
+PRINT TABLE estacoes; 

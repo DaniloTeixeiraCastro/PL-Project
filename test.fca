@@ -1,0 +1,30 @@
+-- Importar as tabelas
+IMPORT TABLE estacoes FROM "estacoes.csv";
+IMPORT TABLE observacoes FROM "observacoes.csv";
+
+-- Mostrar todas as estações
+PRINT TABLE estacoes;
+
+-- Selecionar estações com temperatura acima de 20 graus
+SELECT * FROM observacoes WHERE Temperatura > 20;
+
+-- Criar uma nova tabela com as estações mais quentes
+CREATE TABLE mais_quentes SELECT * FROM observacoes WHERE Temperatura > 20;
+
+-- Mostrar a nova tabela
+PRINT TABLE mais_quentes;
+
+-- Juntar as tabelas de estações e observações
+CREATE TABLE completo FROM estacoes JOIN observacoes USING Id;
+
+-- Mostrar a tabela completa
+PRINT TABLE completo;
+
+-- Definir um procedimento
+PROCEDURE atualizar_observacoes DO
+    CREATE TABLE mais_quentes SELECT * FROM observacoes WHERE Temperatura > 20;
+    CREATE TABLE completo FROM estacoes JOIN observacoes USING Id;
+END;
+
+-- Executar o procedimento
+CALL atualizar_observacoes; 
