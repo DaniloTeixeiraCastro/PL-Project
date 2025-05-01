@@ -1,0 +1,50 @@
+-- Parte 1: Configuração básica de tabelas
+-- Importar dados
+IMPORT TABLE estacoes FROM "estacoes.csv";
+PRINT TABLE estacoes;
+
+IMPORT TABLE observacoes FROM "observacoes.csv";
+PRINT TABLE observacoes;
+
+-- Renomear e exportar
+RENAME TABLE estacoes est;
+PRINT TABLE est;
+EXPORT TABLE est AS "estacoes_copia.csv";
+
+-- Parte 2: Queries simples
+-- SELECT básico
+SELECT * FROM observacoes;
+SELECT Id, Local FROM est;
+
+-- SELECT com WHERE
+SELECT * FROM observacoes WHERE Temperatura > 20;
+SELECT * FROM observacoes WHERE IntensidadeVentoKM <= 5;
+
+-- SELECT com LIMIT
+SELECT * FROM observacoes LIMIT 2;
+
+-- Parte 3: Tabelas derivadas
+-- CREATE com SELECT
+CREATE TABLE temps_altas SELECT * FROM observacoes WHERE Temperatura > 20;
+PRINT TABLE temps_altas;
+
+-- CREATE com JOIN
+CREATE TABLE dados_completos FROM est JOIN observacoes USING Id;
+PRINT TABLE dados_completos;
+
+-- Parte 4: Procedimento
+PROCEDURE analise_temps DO
+    CREATE TABLE temp_alta SELECT * FROM observacoes WHERE Temperatura > 20;
+    CREATE TABLE completo FROM est JOIN temp_alta USING Id;
+    PRINT TABLE completo;
+END;
+
+CALL analise_temps;
+
+-- Limpeza
+DISCARD TABLE est;
+DISCARD TABLE observacoes;
+DISCARD TABLE temps_altas;
+DISCARD TABLE dados_completos;
+DISCARD TABLE temp_alta;
+DISCARD TABLE completo;

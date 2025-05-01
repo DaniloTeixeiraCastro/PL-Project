@@ -9,34 +9,45 @@ def evaluate_condition(row, condition):
         return True
     
     if isinstance(condition, tuple):
+        if condition[0] == 'WHERE':
+            return evaluate_condition(row, condition[1])
+            
         if condition[0] == 'AND':
             return evaluate_condition(row, condition[1]) and evaluate_condition(row, condition[2])
         
-        if len(condition) == 3:
-            op, column, value = condition
-            row_value = row.get(column)
-            
-            if row_value is None:
-                return False
-            
-            try:
+        # Handle basic comparison
+        op, column, target_value = condition
+        row_value = row.get(column)
+        
+        if row_value is None:
+            return False
+
+        # Convert to float for numeric comparisons if possible
+        try:
+            if isinstance(row_value, str) and row_value.replace('.','',1).isdigit():
                 row_value = float(row_value)
-                value = float(value)
-            except (ValueError, TypeError):
-                pass
-            
-            if op == '=':
-                return row_value == value
-            elif op == '<>':
-                return row_value != value
-            elif op == '<':
-                return row_value < value
-            elif op == '>':
-                return row_value > value
-            elif op == '<=':
-                return row_value <= value
-            elif op == '>=':
-                return row_value >= value
+            elif isinstance(row_value, (int, float)):
+                row_value = float(row_value)
+                
+            if isinstance(target_value, (int, float)):
+                target_value = float(target_value)
+            elif isinstance(target_value, str) and target_value.replace('.','',1).isdigit():
+                target_value = float(target_value)
+        except (ValueError, TypeError):
+            pass
+
+        if op == '=':
+            return row_value == target_value
+        elif op == '<>':
+            return row_value != target_value
+        elif op == '<':
+            return row_value < target_value
+        elif op == '>':
+            return row_value > target_value
+        elif op == '<=':
+            return row_value <= target_value
+        elif op == '>=':
+            return row_value >= target_value
     
     return False
 
@@ -97,11 +108,25 @@ def import_csv(file_name):
                         current += char
                 values.append(current.strip())
                 
-                # Create dictionary with header keys
+                # Create dictionary with header keys and convert numeric values
                 row = {}
                 for i, key in enumerate(header):
                     if i < len(values):
-                        row[key] = values[i]
+                        value = values[i].strip('"')  # Remove quotes if present
+                        # Try to convert numeric values
+                        try:
+                            if '.' in value:
+                                row[key] = float(value)
+                                print(f"Converted {key}={value} to float: {row[key]}")
+                            elif value.isdigit():
+                                row[key] = int(value)
+                                print(f"Converted {key}={value} to int: {row[key]}")
+                            else:
+                                row[key] = value
+                                print(f"Kept {key}={value} as string")
+                        except ValueError:
+                            row[key] = value
+                            print(f"Failed to convert {key}={value}, keeping as string")
                 data.append(row)
             
             print(f"Successfully imported {len(data)} rows from {file_name}")
@@ -301,4 +326,4 @@ def main():
         print(f"Error: {str(e)}")
 
 if __name__ == "__main__":
-    main() 
+    main()
