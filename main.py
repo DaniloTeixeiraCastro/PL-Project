@@ -61,7 +61,15 @@ def select_rows(table_name, select_list, where_clause=None, limit=None):
         return []
     
     # Filter rows based on where clause
-    filtered_rows = [row for row in table if evaluate_condition(row, where_clause)]
+    filtered_rows = []
+    seen_rows = set()  # Track unique rows
+    for row in table:
+        if evaluate_condition(row, where_clause):
+            # Create a tuple of values for comparison
+            row_key = tuple(sorted(row.items()))
+            if row_key not in seen_rows:
+                seen_rows.add(row_key)
+                filtered_rows.append(row)
     
     # Apply limit if specified
     if limit is not None:
@@ -80,33 +88,109 @@ def select_rows(table_name, select_list, where_clause=None, limit=None):
     
     return filtered_rows
 
+def parse_csv_line(line, line_number):
+    """Parse a CSV line respecting quotes and returning a list of values."""
+    values = []
+    current = ''
+    in_quotes = False
+    i = 0
+    
+    while i < len(line):
+        char = line[i]
+        
+        # Handle quotes
+        if char == '"':
+            if not in_quotes:  # Start of quoted field
+                in_quotes = True
+            elif i + 1 < len(line) and line[i + 1] == '"':  # Escaped quote
+                current += '"'
+                i += 1  # Skip next quote
+            else:  # End of quoted field
+                in_quotes = False
+        # Handle commas
+        elif char == ',' and not in_quotes:
+            values.append(current.strip())
+            current = ''
+        # Handle all other characters
+        else:
+            current += char
+        i += 1
+    
+    # Add the last field
+    values.append(current.strip())
+    
+    # Validate no unclosed quotes
+    if in_quotes:
+        raise ValueError(f"Unclosed quotes in line {line_number + 1}")
+        
+    return values
+
 def import_csv(file_name):
-    """Import a CSV file and return its contents as a list of dictionaries"""
+    """Import a CSV file and return its contents as a list of dictionaries.
+    Validates CSV structure and handles malformed lines."""
     try:
         print(f"Trying to import file: {file_name}")
         with open(file_name, 'r', encoding='utf-8') as file:
-            # Skip comment lines
-            lines = [line for line in file if not line.strip().startswith('#')]
+            lines = []
+            line_number = 0
             
-            # Read the header
-            header = lines[0].strip().split(',')
+            # Read and validate each line
+            for line in file:
+                line_number += 1
+                line = line.strip()
+                
+                # Skip empty lines
+                if not line:
+                    continue
+                    
+                # Skip comment lines starting with #
+                if line.startswith('#'):
+                    continue
+                
+                lines.append(line)
             
-            # Process each line
+            if not lines:
+                raise ValueError("File is empty or contains only comments")
+                
+            # Read and validate header
+            header = parse_csv_line(lines[0], 0)
+            if not header:
+                raise ValueError("Invalid header: empty or malformed")
+                
+            # Validate header names are valid identifiers
+            for col in header:
+                if not col.strip() or ',' in col:
+                    raise ValueError(f"Invalid column name: {col}")
+            
+            # Process each data line
             data = []
-            for line in lines[1:]:
-                # Split by comma, but respect quotes
-                values = []
-                current = ''
-                in_quotes = False
-                for char in line:
-                    if char == '"':
-                        in_quotes = not in_quotes
-                    elif char == ',' and not in_quotes:
-                        values.append(current.strip())
-                        current = ''
-                    else:
-                        current += char
-                values.append(current.strip())
+            for i, line in enumerate(lines[1:], 1):
+                try:
+                    values = parse_csv_line(line, i)
+                    if len(values) != len(header):
+                        print(f"Warning: Line {i+1} has {len(values)} values but header has {len(header)} columns. Skipping line: {line}")
+                        continue
+                        
+                    # Create dictionary with header keys and convert numeric values
+                    row = {}
+                    for col, value in zip(header, values):
+                        # Try to convert numeric values
+                        try:
+                            if value.strip():  # Skip empty values
+                                if '.' in value:
+                                    row[col] = float(value)
+                                elif value.isdigit():
+                                    row[col] = int(value)
+                                else:
+                                    row[col] = value
+                            else:
+                                row[col] = value
+                        except ValueError:
+                            row[col] = value
+                    data.append(row)
+                except Exception as e:
+                    print(f"Warning: Error processing line {i+1}: {str(e)}. Skipping line: {line}")
+                    continue
                 
                 # Create dictionary with header keys and convert numeric values
                 row = {}
@@ -176,18 +260,23 @@ def join_tables(table1_name, table2_name, join_column):
         key = row.get(join_column)
         if key is not None:
             if key not in table2_dict:
-                table2_dict[key] = []
-            table2_dict[key].append(row)
+                table2_dict[key] = row  # Store only one row per key
     
     # Perform the join
     result = []
+    seen_rows = set()  # Track unique rows
     for row1 in table1:
         key = row1.get(join_column)
         if key in table2_dict:
-            for row2 in table2_dict[key]:
-                # Merge rows, preferring values from table2 for common columns
-                merged_row = row1.copy()
-                merged_row.update(row2)
+            row2 = table2_dict[key]
+            # Merge rows, preferring values from table2 for common columns
+            merged_row = row1.copy()
+            merged_row.update(row2)
+            
+            # Create a tuple of values for comparison
+            row_key = tuple(sorted(merged_row.items()))
+            if row_key not in seen_rows:
+                seen_rows.add(row_key)
                 result.append(merged_row)
     
     print(f"Joined {len(result)} rows from {table1_name} and {table2_name}")
