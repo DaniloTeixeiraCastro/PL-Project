@@ -1,0 +1,2 @@
+IMPORT TABLE estacoes FROM "estacoes_novo.csv";
+PRINT TABLE estacoes;

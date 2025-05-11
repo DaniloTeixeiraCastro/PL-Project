@@ -1,0 +1,14 @@
+-- Importar a tabela original
+IMPORT TABLE estacoes FROM "estacoes.csv";
+
+-- Importar observações
+IMPORT TABLE observacoes FROM "observacoes.csv";
+
+-- Criar uma nova tabela com dados combinados e calculados
+CREATE TABLE estacoes_completas FROM estacoes JOIN observacoes USING Id;
+
+-- Mostrar a tabela resultante
+PRINT TABLE estacoes_completas;
+
+-- Exportar para um novo arquivo
+EXPORT TABLE estacoes_completas AS "estacoes_modificadas.csv";
