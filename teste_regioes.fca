@@ -1,16 +1,15 @@
--- Importar tabelas
+-- Importar a tabela com a nova coluna
 IMPORT TABLE estacoes FROM "estacoes_novo.csv";
-IMPORT TABLE observacoes FROM "observacoes.csv";
+PRINT TABLE estacoes;
 
--- Mostrar estações do Norte e Sul
+-- Selecionar apenas estações do Norte
 SELECT * FROM estacoes WHERE Regiao = "Norte";
-SELECT * FROM estacoes WHERE Regiao = "Sul";
 
--- Criar tabela combinada
-CREATE TABLE dados_completos FROM estacoes JOIN observacoes USING Id;
+-- Juntar com observações
+CREATE TABLE dados_norte FROM estacoes JOIN observacoes USING Id;
 
--- Mostrar dados meteorológicos apenas do Norte
-SELECT * FROM dados_completos WHERE Regiao = "Norte";
+-- Mostrar dados das estações do Norte
+SELECT * FROM dados_norte WHERE Regiao = "Norte";
 
--- Exportar dados completos
-EXPORT TABLE dados_completos AS "dados_completos.csv";
+-- Exportar resultados
+EXPORT TABLE dados_norte AS "dados_norte.csv";

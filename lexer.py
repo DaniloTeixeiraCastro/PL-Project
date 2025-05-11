@@ -8,8 +8,7 @@ tokens = (
     'DO', 'END', 'CALL', 'LIMIT',
     
     # Operators
-    'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'EQUALS', 'NOTEQUALS',
-    'LT', 'GT', 'LTE', 'GTE', 'AND',
+    'EQUALS', 'NOTEQUALS', 'LT', 'GT', 'LTE', 'GTE', 'AND',
     
     # Literals
     'ID', 'NUMBER', 'STRING',
@@ -22,9 +21,6 @@ tokens = (
 )
 
 # Regular expression rules for simple tokens
-t_PLUS = r'\+'
-t_MINUS = r'-'
-t_DIVIDE = r'/'
 t_EQUALS = r'='
 t_NOTEQUALS = r'<>'
 t_LT = r'<'
@@ -114,25 +110,30 @@ def t_LIMIT(t):
 # Regular expression rules for complex tokens
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
+    # Identifiers: starts with letter or underscore, followed by letters, digits, or underscores
     return t
 
 def t_NUMBER(t):
-    r'\d+\.?\d*'
+    r'-?\d*\.?\d+'
+    # Numbers: optional minus sign, optional integer part, optional decimal point, at least one digit
     t.value = float(t.value)
     return t
 
 def t_STRING(t):
     r'\"[^\"]*\"'
+    # Strings: text enclosed in double quotes, allowing commas and other characters
     t.value = t.value[1:-1]  # Remove quotes
     return t
 
 def t_COMMENT(t):
     r'--.*'
-    pass  # Comments are ignored
+    # Single-line comments: ignored
+    pass
 
 def t_MULTILINE_COMMENT(t):
     r'\{-.*?-\}'
-    pass  # Multiline comments are ignored
+    # Multi-line comments: ignored, non-greedy match
+    pass
 
 # Define a rule to track line numbers
 def t_newline(t):
@@ -144,8 +145,28 @@ t_ignore = ' \t'
 
 # Error handling rule
 def t_error(t):
-    print(f"Illegal character '{t.value[0]}' at line {t.lineno}")
+    print(f"Illegal character '{t.value[0]}' at line {t.lineno}, position {t.lexpos}")
     t.lexer.skip(1)
 
 # Build the lexer
-lexer = lex.lex() 
+lexer = lex.lex()
+
+# Example test function (uncomment to use)
+"""
+def test_lexer(input_string):
+    lexer.input(input_string)
+    for token in lexer:
+        print(f"Token: {token.type}, Value: {token.value}, Line: {token.lineno}")
+
+# Test cases
+test_input = '''
+IMPORT TABLE estacoes FROM "estacoes.csv";
+SELECT * FROM observacoes WHERE Temperatura > 22;
+SELECT DataHoraObservacao, Id FROM observacoes WHERE Temperatura < -10.5;
+-- This is a comment
+{- This is a
+   multiline comment -}
+CREATE TABLE mais_quentes SELECT * FROM observacoes WHERE Temperatura > 22;
+'''
+test_lexer(test_input)
+"""
