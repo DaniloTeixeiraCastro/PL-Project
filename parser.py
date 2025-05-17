@@ -35,7 +35,8 @@ def p_statement(p):
                 | select_statement
                 | create_table_statement
                 | procedure_statement
-                | call_statement'''
+                | call_statement
+                | update_statement'''
     """Parse a single statement (e.g., IMPORT, SELECT, etc.)."""
     p[0] = p[1]
 
@@ -60,9 +61,12 @@ def p_rename_statement(p):
     p[0] = ('RENAME', p[3], p[4])
 
 def p_print_statement(p):
-    '''print_statement : PRINT TABLE ID SEMICOLON'''
-    """Parse PRINT TABLE table_name;"""
-    p[0] = ('PRINT', p[3])
+    '''print_statement : PRINT TABLE ID SEMICOLON
+                      | PRINT TABLE ID AS STRING SEMICOLON'''
+    if len(p) == 5:
+        p[0] = ('PRINT', p[3])
+    else:
+        p[0] = ('PRINT', p[3], p[5])
 
 def p_select_statement(p):
     '''select_statement : SELECT select_list FROM ID where_clause limit_clause SEMICOLON
@@ -153,6 +157,11 @@ def p_call_statement(p):
     '''call_statement : CALL ID SEMICOLON'''
     """Parse CALL procedure_name;"""
     p[0] = ('CALL', p[2])
+
+def p_update_statement(p):
+    '''update_statement : UPDATE ID SET ID EQUALS STRING WHERE ID EQUALS STRING SEMICOLON'''
+    # Só aceita UPDATE observacoes SET DataHoraObservacao = ... WHERE Id = ...;
+    p[0] = ('UPDATE_DATAHORA', p[2], p[4], p[6], p[8], p[10])
 
 def p_empty(p):
     '''empty :'''

@@ -290,6 +290,19 @@ def join_tables(table1_name, table2_name, join_column):
     print(f"Juntadas {len(result)} linhas de {table1_name} e {table2_name}")
     return result
 
+def print_table(table_data, table_title):
+    if not table_data:
+        print(f"\nTabela: {table_title} está vazia")
+        return
+    columns = list(table_data[0].keys())
+    widths = {col: max(len(str(col)), max(len(str(row.get(col, ""))) for row in table_data)) for col in columns}
+    print(f"\nTabela: {table_title}")
+    header = " | ".join(col.ljust(widths[col]) for col in columns)
+    print(header)
+    print("-" * len(header))
+    for row in table_data:
+        print(" | ".join(str(row.get(col, "")).ljust(widths[col]) for col in columns))
+
 def execute_statement(statement):
     """Executa um comando CQL analisado.
     
@@ -329,11 +342,14 @@ def execute_statement(statement):
                 print(f"Erro: Tabela {old_name} não existe")
         
         elif stmt_type == 'PRINT':
-            _, table_name = statement
+            # Suporte a ('PRINT', tabela) ou ('PRINT', tabela, nome_customizado)
+            if len(statement) == 2:
+                _, table_name = statement
+                table_title = table_name
+            else:
+                _, table_name, table_title = statement
             if table_name in tables:
-                print(f"\nTabela: {table_name}")
-                for row in tables[table_name]:
-                    print(row)  # Exibe todas as linhas da tabela
+                print_table(tables[table_name], table_title)
             else:
                 print(f"Erro: Tabela {table_name} não existe")
         
@@ -371,6 +387,19 @@ def execute_statement(statement):
                     execute_statement(stmt)  # Executa cada comando do procedimento
             else:
                 print(f"Erro: Procedimento {proc_name} não existe")
+        
+        elif stmt_type == 'UPDATE_DATAHORA':
+            # ('UPDATE_DATAHORA', tabela, campo, novo_valor, campo_where, valor_where)
+            _, tabela, campo, novo_valor, campo_where, valor_where = statement
+            if tabela in tables:
+                count = 0
+                for row in tables[tabela]:
+                    if row.get(campo_where) == valor_where:
+                        row[campo] = novo_valor
+                        count += 1
+                print(f"{count} registro(s) atualizado(s) em {tabela}.")
+            else:
+                print(f"Tabela {tabela} não encontrada.")
     
     except Exception as e:
         print(f"Erro ao executar comando {stmt_type}: {str(e)}")

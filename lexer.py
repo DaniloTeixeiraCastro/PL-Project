@@ -5,7 +5,7 @@ tokens = (
     # Keywords
     'IMPORT', 'EXPORT', 'TABLE', 'FROM', 'AS', 'DISCARD', 'RENAME',
     'PRINT', 'SELECT', 'WHERE', 'CREATE', 'JOIN', 'USING', 'PROCEDURE',
-    'DO', 'END', 'CALL', 'LIMIT',
+    'DO', 'END', 'CALL', 'LIMIT', 'UPDATE', 'SET',
     
     # Operators
     'EQUALS', 'NOTEQUALS', 'LT', 'GT', 'LTE', 'GTE', 'AND',
@@ -105,6 +105,14 @@ def t_CALL(t):
 
 def t_LIMIT(t):
     r'LIMIT'
+    return t
+
+def t_UPDATE(t):
+    r'UPDATE'
+    return t
+
+def t_SET(t):
+    r'SET'
     return t
 
 # Regular expression rules for complex tokens
