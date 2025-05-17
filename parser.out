@@ -3,13 +3,7 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     COMMENT
-    DIVIDE
-    LPAREN
-    MINUS
     MULTILINE_COMMENT
-    PLUS
-    RPAREN
-    TIMES
 
 Grammar
 
@@ -55,7 +49,7 @@ Rule 38    value -> ID
 Rule 39    limit_clause -> LIMIT NUMBER
 Rule 40    limit_clause -> empty
 Rule 41    create_table_statement -> CREATE TABLE ID select_statement
-Rule 42    create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON
+Rule 42    create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON
 Rule 43    procedure_statement -> PROCEDURE ID DO statement_list END SEMICOLON
 Rule 44    call_statement -> CALL ID SEMICOLON
 Rule 45    empty -> <empty>
@@ -69,7 +63,6 @@ COMMA                : 25
 COMMENT              : 
 CREATE               : 41 42
 DISCARD              : 15
-DIVIDE               : 
 DO                   : 43
 END                  : 43
 EQUALS               : 30
@@ -81,24 +74,21 @@ ID                   : 13 14 15 16 16 17 18 19 20 21 24 25 28 38 41 42 42 42 42 
 IMPORT               : 13
 JOIN                 : 42
 LIMIT                : 39
-LPAREN               : 
+LPAREN               : 42
 LT                   : 32
 LTE                  : 34
-MINUS                : 
 MULTILINE_COMMENT    : 
 NOTEQUALS            : 31
 NUMBER               : 36 39
-PLUS                 : 
 PRINT                : 17
 PROCEDURE            : 43
 RENAME               : 16
-RPAREN               : 
+RPAREN               : 42
 SELECT               : 18 19 20 21
 SEMICOLON            : 13 14 15 16 17 18 19 20 21 42 43 44
 STAR                 : 22
 STRING               : 13 14 37
 TABLE                : 13 14 15 16 17 41 42
-TIMES                : 
 USING                : 42
 WHERE                : 26
 error                : 
@@ -153,7 +143,7 @@ state 0
     (20) select_statement -> . SELECT select_list FROM ID limit_clause SEMICOLON
     (21) select_statement -> . SELECT select_list FROM ID SEMICOLON
     (41) create_table_statement -> . CREATE TABLE ID select_statement
-    (42) create_table_statement -> . CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON
+    (42) create_table_statement -> . CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON
     (43) procedure_statement -> . PROCEDURE ID DO statement_list END SEMICOLON
     (44) call_statement -> . CALL ID SEMICOLON
 
@@ -209,7 +199,7 @@ state 2
     (20) select_statement -> . SELECT select_list FROM ID limit_clause SEMICOLON
     (21) select_statement -> . SELECT select_list FROM ID SEMICOLON
     (41) create_table_statement -> . CREATE TABLE ID select_statement
-    (42) create_table_statement -> . CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON
+    (42) create_table_statement -> . CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON
     (43) procedure_statement -> . PROCEDURE ID DO statement_list END SEMICOLON
     (44) call_statement -> . CALL ID SEMICOLON
 
@@ -460,7 +450,7 @@ state 18
 state 19
 
     (41) create_table_statement -> CREATE . TABLE ID select_statement
-    (42) create_table_statement -> CREATE . TABLE ID FROM ID JOIN ID USING ID SEMICOLON
+    (42) create_table_statement -> CREATE . TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON
 
     TABLE           shift and go to state 32
 
@@ -568,7 +558,7 @@ state 31
 state 32
 
     (41) create_table_statement -> CREATE TABLE . ID select_statement
-    (42) create_table_statement -> CREATE TABLE . ID FROM ID JOIN ID USING ID SEMICOLON
+    (42) create_table_statement -> CREATE TABLE . ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON
 
     ID              shift and go to state 42
 
@@ -642,7 +632,7 @@ state 41
 state 42
 
     (41) create_table_statement -> CREATE TABLE ID . select_statement
-    (42) create_table_statement -> CREATE TABLE ID . FROM ID JOIN ID USING ID SEMICOLON
+    (42) create_table_statement -> CREATE TABLE ID . FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON
     (18) select_statement -> . SELECT select_list FROM ID where_clause limit_clause SEMICOLON
     (19) select_statement -> . SELECT select_list FROM ID where_clause SEMICOLON
     (20) select_statement -> . SELECT select_list FROM ID limit_clause SEMICOLON
@@ -677,7 +667,7 @@ state 43
     (20) select_statement -> . SELECT select_list FROM ID limit_clause SEMICOLON
     (21) select_statement -> . SELECT select_list FROM ID SEMICOLON
     (41) create_table_statement -> . CREATE TABLE ID select_statement
-    (42) create_table_statement -> . CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON
+    (42) create_table_statement -> . CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON
     (43) procedure_statement -> . PROCEDURE ID DO statement_list END SEMICOLON
     (44) call_statement -> . CALL ID SEMICOLON
 
@@ -827,7 +817,7 @@ state 52
 
 state 53
 
-    (42) create_table_statement -> CREATE TABLE ID FROM . ID JOIN ID USING ID SEMICOLON
+    (42) create_table_statement -> CREATE TABLE ID FROM . ID JOIN ID USING LPAREN ID RPAREN SEMICOLON
 
     ID              shift and go to state 64
 
@@ -855,7 +845,7 @@ state 54
     (20) select_statement -> . SELECT select_list FROM ID limit_clause SEMICOLON
     (21) select_statement -> . SELECT select_list FROM ID SEMICOLON
     (41) create_table_statement -> . CREATE TABLE ID select_statement
-    (42) create_table_statement -> . CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON
+    (42) create_table_statement -> . CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON
     (43) procedure_statement -> . PROCEDURE ID DO statement_list END SEMICOLON
     (44) call_statement -> . CALL ID SEMICOLON
 
@@ -984,7 +974,7 @@ state 63
 
 state 64
 
-    (42) create_table_statement -> CREATE TABLE ID FROM ID . JOIN ID USING ID SEMICOLON
+    (42) create_table_statement -> CREATE TABLE ID FROM ID . JOIN ID USING LPAREN ID RPAREN SEMICOLON
 
     JOIN            shift and go to state 75
 
@@ -1116,7 +1106,7 @@ state 74
 
 state 75
 
-    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN . ID USING ID SEMICOLON
+    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN . ID USING LPAREN ID RPAREN SEMICOLON
 
     ID              shift and go to state 86
 
@@ -1234,7 +1224,7 @@ state 85
 
 state 86
 
-    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN ID . USING ID SEMICOLON
+    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN ID . USING LPAREN ID RPAREN SEMICOLON
 
     USING           shift and go to state 92
 
@@ -1244,12 +1234,11 @@ state 87
     (29) condition -> condition AND condition .
     (29) condition -> condition . AND condition
 
-  ! shift/reduce conflict for AND resolved as shift
+    AND             reduce using rule 29 (condition -> condition AND condition .)
     SEMICOLON       reduce using rule 29 (condition -> condition AND condition .)
     LIMIT           reduce using rule 29 (condition -> condition AND condition .)
-    AND             shift and go to state 78
 
-  ! AND             [ reduce using rule 29 (condition -> condition AND condition .) ]
+  ! AND             [ shift and go to state 78 ]
 
 
 state 88
@@ -1290,33 +1279,47 @@ state 91
 
 state 92
 
-    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING . ID SEMICOLON
+    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING . LPAREN ID RPAREN SEMICOLON
 
-    ID              shift and go to state 93
+    LPAREN          shift and go to state 93
 
 
 state 93
 
-    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID . SEMICOLON
+    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN . ID RPAREN SEMICOLON
 
-    SEMICOLON       shift and go to state 94
+    ID              shift and go to state 94
 
 
 state 94
 
-    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .
+    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID . RPAREN SEMICOLON
 
-    IMPORT          reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
-    EXPORT          reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
-    DISCARD         reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
-    RENAME          reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
-    PRINT           reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
-    SELECT          reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
-    CREATE          reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
-    PROCEDURE       reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
-    CALL            reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
-    $end            reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
-    END             reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING ID SEMICOLON .)
+    RPAREN          shift and go to state 95
+
+
+state 95
+
+    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN . SEMICOLON
+
+    SEMICOLON       shift and go to state 96
+
+
+state 96
+
+    (42) create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .
+
+    IMPORT          reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
+    EXPORT          reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
+    DISCARD         reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
+    RENAME          reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
+    PRINT           reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
+    SELECT          reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
+    CREATE          reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
+    PROCEDURE       reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
+    CALL            reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
+    $end            reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
+    END             reduce using rule 42 (create_table_statement -> CREATE TABLE ID FROM ID JOIN ID USING LPAREN ID RPAREN SEMICOLON .)
 
 WARNING: 
 WARNING: Conflicts:
@@ -1324,6 +1327,5 @@ WARNING:
 WARNING: shift/reduce conflict for SEMICOLON in state 50 resolved as shift
 WARNING: shift/reduce conflict for LIMIT in state 50 resolved as shift
 WARNING: shift/reduce conflict for SEMICOLON in state 58 resolved as shift
-WARNING: shift/reduce conflict for AND in state 87 resolved as shift
 WARNING: reduce/reduce conflict in state 62 resolved using rule (where_clause -> empty)
 WARNING: rejected rule (limit_clause -> empty) in state 62

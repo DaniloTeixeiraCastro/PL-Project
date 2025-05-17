@@ -15,7 +15,7 @@ CREATE TABLE mais_quentes SELECT * FROM observacoes WHERE Temperatura > 20;
 PRINT TABLE mais_quentes;
 
 -- Juntar as tabelas de estações e observações
-CREATE TABLE completo FROM estacoes JOIN observacoes USING Id;
+CREATE TABLE completo FROM estacoes JOIN observacoes USING (Id);
 
 -- Mostrar a tabela completa
 PRINT TABLE completo;

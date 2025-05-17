@@ -5,7 +5,7 @@ IMPORT TABLE estacoes FROM "estacoes.csv";
 IMPORT TABLE observacoes FROM "observacoes.csv";
 
 -- Criar uma nova tabela com dados combinados e calculados
-CREATE TABLE estacoes_completas FROM estacoes JOIN observacoes USING Id;
+CREATE TABLE estacoes_completas FROM estacoes JOIN observacoes USING (Id);
 
 -- Mostrar a tabela resultante
 PRINT TABLE estacoes_completas;

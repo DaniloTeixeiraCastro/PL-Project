@@ -6,7 +6,7 @@ PRINT TABLE estacoes;
 SELECT * FROM estacoes WHERE Regiao = "Norte";
 
 -- Juntar com observações
-CREATE TABLE dados_norte FROM estacoes JOIN observacoes USING Id;
+CREATE TABLE dados_norte FROM estacoes JOIN observacoes USING (Id);
 
 -- Mostrar dados das estações do Norte
 SELECT * FROM dados_norte WHERE Regiao = "Norte";

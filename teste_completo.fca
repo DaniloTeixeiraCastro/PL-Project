@@ -17,7 +17,7 @@ SELECT * FROM observacoes;
 SELECT Id, Local FROM est;
 
 -- SELECT com WHERE
-SELECT * FROM observacoes WHERE Temperatura > 20;
+SELECT * FROM observacoes WHERE Temperatura > 22;
 SELECT * FROM observacoes WHERE IntensidadeVentoKM <= 5;
 
 -- SELECT com LIMIT
@@ -29,13 +29,13 @@ CREATE TABLE temps_altas SELECT * FROM observacoes WHERE Temperatura > 20;
 PRINT TABLE temps_altas;
 
 -- CREATE com JOIN
-CREATE TABLE dados_completos FROM est JOIN observacoes USING Id;
+CREATE TABLE dados_completos FROM est JOIN observacoes USING (Id);
 PRINT TABLE dados_completos;
 
 -- Parte 4: Procedimento
 PROCEDURE analise_temps DO
-    CREATE TABLE temp_alta SELECT * FROM observacoes WHERE Temperatura > 20;
-    CREATE TABLE completo FROM est JOIN temp_alta USING Id;
+    CREATE TABLE temp_alta SELECT * FROM observacoes WHERE Temperatura > 22;
+    CREATE TABLE completo FROM est JOIN temp_alta USING (Id);
     PRINT TABLE completo;
 END;
 

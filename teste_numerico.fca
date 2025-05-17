@@ -8,7 +8,7 @@ SELECT * FROM observacoes WHERE Temperatura > 20;
 -- Testar procedimento com seleção numérica
 PROCEDURE temperaturas_altas DO
     CREATE TABLE temp_alta SELECT * FROM observacoes WHERE Temperatura > 15;
-    CREATE TABLE dados_quentes FROM estacoes JOIN temp_alta USING Id;
+    CREATE TABLE dados_quentes FROM estacoes JOIN temp_alta USING (Id);
     PRINT TABLE dados_quentes;
 END;
 
