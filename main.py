@@ -244,6 +244,18 @@ def export_csv(table_name, file_name):
         print(f"Erro ao escrever em {file_name}: {str(e)}")
         return False
 
+def export_multiple_tables_csv(table_names, file_name):
+    """Exporta múltiplas tabelas para um único arquivo CSV, separando por título e cabeçalho."""
+    with open(file_name, 'w', encoding='utf-8', newline='') as f:
+        for idx, table_name in enumerate(table_names):
+            if table_name in tables and tables[table_name]:
+                f.write(f"==== {table_name} ====" + "\n")
+                writer = csv.DictWriter(f, fieldnames=tables[table_name][0].keys())
+                writer.writeheader()
+                writer.writerows(tables[table_name])
+                f.write("\n")
+    print(f"Tabelas {', '.join(table_names)} exportadas para {file_name}")
+
 def join_tables(table1_name, table2_name, join_column):
     """Junta duas tabelas com base em uma coluna comum.
     
@@ -296,7 +308,7 @@ def print_table(table_data, table_title):
         return
     columns = list(table_data[0].keys())
     widths = {col: max(len(str(col)), max(len(str(row.get(col, ""))) for row in table_data)) for col in columns}
-    print(f"\nTabela: {table_title}")
+    print(f"\n==============================\nTABELA: {table_title}\n==============================")
     header = " | ".join(col.ljust(widths[col]) for col in columns)
     print(header)
     print("-" * len(header))
@@ -385,6 +397,9 @@ def execute_statement(statement):
             if proc_name in procedures:
                 for stmt in procedures[proc_name]:
                     execute_statement(stmt)  # Executa cada comando do procedimento
+            elif statement[1] == 'EXPORT_TODAS_TABELAS':
+                export_multiple_tables_csv(['temps_altas', 'dados_completos', 'temperaturas_altas'], 'dados_completos_multitabelas.csv')
+                return
             else:
                 print(f"Erro: Procedimento {proc_name} não existe")
         
@@ -398,6 +413,40 @@ def execute_statement(statement):
                         row[campo] = novo_valor
                         count += 1
                 print(f"{count} registro(s) atualizado(s) em {tabela}.")
+            else:
+                print(f"Tabela {tabela} não encontrada.")
+        
+        elif stmt_type == 'PRINT_AVG':
+            # ('PRINT_AVG', coluna, tabela)
+            _, coluna, tabela = statement
+            if tabela in tables:
+                valores = [float(row[coluna]) for row in tables[tabela] if row.get(coluna) not in (None, '', 'NULL')]
+                if valores:
+                    media = sum(valores) / len(valores)
+                    print(f"AVG({coluna}) FROM {tabela} = {media:.2f}")
+                else:
+                    print(f"Nenhum valor válido encontrado para {coluna} em {tabela}.")
+            else:
+                print(f"Tabela {tabela} não encontrada.")
+        
+        elif stmt_type == 'PRINT_STRING':
+            # ('PRINT_STRING', mensagem)
+            print(statement[1])
+        
+        elif stmt_type == 'EXPORT_AVG':
+            # ('EXPORT_AVG', coluna, tabela, arquivo)
+            _, coluna, tabela, arquivo = statement
+            if tabela in tables:
+                valores = [float(row[coluna]) for row in tables[tabela] if row.get(coluna) not in (None, '', 'NULL')]
+                if valores:
+                    media = sum(valores) / len(valores)
+                    with open(arquivo, 'w', newline='', encoding='utf-8') as csvfile:
+                        writer = csv.writer(csvfile)
+                        writer.writerow([f'AVG_{coluna}'])
+                        writer.writerow([f'{media:.2f}'])
+                    print(f"Média exportada para {arquivo}")
+                else:
+                    print(f"Nenhum valor válido encontrado para {coluna} em {tabela}.")
             else:
                 print(f"Tabela {tabela} não encontrada.")
     

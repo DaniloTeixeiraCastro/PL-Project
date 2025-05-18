@@ -1,5 +1,6 @@
 -- Importar a tabela com a nova coluna
 IMPORT TABLE estacoes FROM "estacoes_novo.csv";
+IMPORT TABLE observacoes FROM "observacoes.csv";
 PRINT TABLE estacoes;
 
 -- Selecionar apenas estações do Norte
@@ -9,7 +10,7 @@ SELECT * FROM estacoes WHERE Regiao = "Norte";
 CREATE TABLE dados_norte FROM estacoes JOIN observacoes USING (Id);
 
 -- Mostrar dados das estações do Norte
-SELECT * FROM dados_norte WHERE Regiao = "Norte";
 
--- Exportar resultados
-EXPORT TABLE dados_norte AS "dados_norte.csv";
+-- Exportar resultados filtrados
+CREATE TABLE dados_norte_norte SELECT * FROM dados_norte WHERE Regiao = "Norte";
+EXPORT TABLE dados_norte_norte AS "dados_norte.csv";

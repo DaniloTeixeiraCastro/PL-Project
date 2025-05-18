@@ -10,6 +10,7 @@ PROCEDURE temperaturas_altas DO
     CREATE TABLE temp_alta SELECT * FROM observacoes WHERE Temperatura > 15;
     CREATE TABLE dados_quentes FROM estacoes JOIN temp_alta USING (Id);
     PRINT TABLE dados_quentes;
+    EXPORT TABLE dados_quentes AS "dados_numericos_dados_quentes.csv";
 END;
 
 CALL temperaturas_altas;

@@ -46,9 +46,13 @@ def p_import_statement(p):
     p[0] = ('IMPORT', p[3], p[5])
 
 def p_export_statement(p):
-    '''export_statement : EXPORT TABLE ID AS STRING SEMICOLON'''
-    """Parse EXPORT TABLE table_name AS "filename";"""
-    p[0] = ('EXPORT', p[3], p[5])
+    '''export_statement : EXPORT TABLE ID AS STRING SEMICOLON
+                       | EXPORT AVG LPAREN ID RPAREN FROM ID AS STRING SEMICOLON'''
+    """Parse EXPORT TABLE table_name AS "filename"; or EXPORT AVG(column) FROM table AS "filename";"""
+    if len(p) == 7:
+        p[0] = ('EXPORT', p[3], p[5])
+    else:
+        p[0] = ('EXPORT_AVG', p[4], p[7], p[9])
 
 def p_discard_statement(p):
     '''discard_statement : DISCARD TABLE ID SEMICOLON'''
@@ -62,11 +66,17 @@ def p_rename_statement(p):
 
 def p_print_statement(p):
     '''print_statement : PRINT TABLE ID SEMICOLON
-                      | PRINT TABLE ID AS STRING SEMICOLON'''
+                      | PRINT TABLE ID AS STRING SEMICOLON
+                      | PRINT AVG LPAREN ID RPAREN FROM ID SEMICOLON
+                      | PRINT STRING SEMICOLON'''
     if len(p) == 5:
         p[0] = ('PRINT', p[3])
-    else:
+    elif len(p) == 6:
         p[0] = ('PRINT', p[3], p[5])
+    elif len(p) == 9:
+        p[0] = ('PRINT_AVG', p[4], p[7])
+    elif len(p) == 4:
+        p[0] = ('PRINT_STRING', p[2])
 
 def p_select_statement(p):
     '''select_statement : SELECT select_list FROM ID where_clause limit_clause SEMICOLON

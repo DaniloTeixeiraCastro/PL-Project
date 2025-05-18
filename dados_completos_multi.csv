@@ -1,0 +1,23 @@
+==== temps_altas.csv ====
+Id,IntensidadeVentoKM,Temperatura,Radiacao,DirecaoVento,IntensidadeVento,Humidade,DataHoraObservacao
+
+E1,2.5,23.2,133.2,NE,0.7,58.0,2025-04-10T19:00
+
+
+==== dados_completos.csv ====
+Id,Local,Coordenadas,IntensidadeVentoKM,Temperatura,Radiacao,DirecaoVento,IntensidadeVento,Humidade,DataHoraObservacao
+
+E1,Terras de Bouro/Barral (CIM),"[-8.31808611,41.70225278]",2.5,23.2,133.2,NE,0.7,58.0,2025-04-10T19:00
+
+E2,Graciosa / Serra das Fontes (DROTRH),"[-28.0038,39.0672]",15.1,12.5,679.6,E,0.0,4.2,2025-04-10T19:00
+
+E3,"Olhão, EPPO","[-7.821,37.033]",4.0,16.4,0.0,NE,0.0,96.0,2025-04-10T19:00
+
+E4,"Setúbal, Areias","[-8.89066111,38.54846667]",3.6,16.8,1.6,SW,0.0,88.0,2025-04-10T19:00
+
+
+==== temperaturas_altas.csv ====
+Id,Local,Coordenadas,IntensidadeVentoKM,Temperatura,Radiacao,DirecaoVento,IntensidadeVento,Humidade,DataHoraObservacao
+
+E1,Terras de Bouro/Barral (CIM),"[-8.31808611,41.70225278]",2.5,23.2,133.2,NE,0.7,58.0,2025-04-10T19:00
+

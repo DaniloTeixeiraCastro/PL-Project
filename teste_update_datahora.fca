@@ -8,7 +8,7 @@ PRINT TABLE observacoes;
 UPDATE observacoes SET DataHoraObservacao = "2025-05-17T14:30" WHERE Id = "E1";
 
 -- Mostrar dados depois
-PRINT TABLE observacoes AS "observacoes atualizada";
+PRINT TABLE observacoes;
 
 -- Exportar tabela atualizada
-EXPORT TABLE observacoes AS "observacoes_update.csv";
+EXPORT TABLE observacoes AS "dados_observacoes_UPDATE.csv";

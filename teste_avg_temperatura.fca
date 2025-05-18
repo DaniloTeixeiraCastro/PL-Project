@@ -1,0 +1,6 @@
+IMPORT TABLE observacoes FROM "observacoes.csv";
+PRINT TABLE observacoes;
+PRINT "Média das temperaturas:";
+PRINT AVG(Temperatura) FROM observacoes;
+-- Exportar média das temperaturas
+EXPORT AVG(Temperatura) FROM observacoes AS "dados_AVG_temperaturas.csv";

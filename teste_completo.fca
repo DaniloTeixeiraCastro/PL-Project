@@ -41,6 +41,11 @@ END;
 
 CALL analise_temps;
 
+-- Exportar cada tabela apresentada em seu próprio CSV
+EXPORT TABLE temps_altas AS "dados_completos_temps_altas.csv";
+EXPORT TABLE dados_completos AS "dados_completos_est.csv";
+EXPORT TABLE temperaturas_altas AS "dados_completos_temperaturas_altas.csv";
+
 -- Limpeza
 DISCARD TABLE est;
 DISCARD TABLE observacoes;
