@@ -2,6 +2,10 @@
 IMPORT TABLE estacoes FROM "estacoes_novo.csv";
 IMPORT TABLE observacoes FROM "observacoes.csv";
 PRINT TABLE estacoes;
+PRINT TABLE observacoes;
+
+-- Selecionar apenas os 2 primeiros registos de observacoes
+SELECT * FROM observacoes LIMIT 2;
 
 -- Selecionar apenas estações do Norte
 SELECT * FROM estacoes WHERE Regiao = "Norte";
