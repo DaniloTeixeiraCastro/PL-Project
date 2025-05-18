@@ -25,7 +25,7 @@ SELECT * FROM observacoes LIMIT 2;
 
 -- Parte 3: Tabelas derivadas
 -- CREATE com SELECT
-CREATE TABLE temps_altas SELECT * FROM observacoes WHERE Temperatura > 20;
+CREATE TABLE temps_altas SELECT * FROM observacoes WHERE Temperatura > 22;
 PRINT TABLE temps_altas;
 
 -- CREATE com JOIN
@@ -35,8 +35,8 @@ PRINT TABLE dados_completos;
 -- Parte 4: Procedimento
 PROCEDURE analise_temps DO
     CREATE TABLE temp_alta SELECT * FROM observacoes WHERE Temperatura > 22;
-    CREATE TABLE completo FROM est JOIN temp_alta USING (Id);
-    PRINT TABLE completo;
+    CREATE TABLE temperaturas_altas FROM est JOIN temp_alta USING (Id);
+    PRINT TABLE temperaturas_altas;
 END;
 
 CALL analise_temps;
@@ -47,4 +47,4 @@ DISCARD TABLE observacoes;
 DISCARD TABLE temps_altas;
 DISCARD TABLE dados_completos;
 DISCARD TABLE temp_alta;
-DISCARD TABLE completo;
+DISCARD TABLE temperaturas_altas;
